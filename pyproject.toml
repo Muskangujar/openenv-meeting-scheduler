@@ -1,0 +1,13 @@
+[openenv-meeting-scheduler]
+name = "meeting-scheduler-env"
+version = "1.0.0"
+description = "OpenEnv meeting scheduler environment"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "openai"
+]
+
+[tool.openenv]
+entrypoint = "server:app"
