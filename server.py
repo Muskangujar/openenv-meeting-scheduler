@@ -8,15 +8,14 @@ env = MeetingSchedulerEnv()
 
 @app.post("/reset")
 def reset(task: str = "easy_single_slot"):
-    obs = env.reset(task)
-    return obs.dict()
+    return env.reset(task)   # ✅ return object directly
 
 
 @app.post("/step")
 def step(action: Action):
     obs, reward, done, info = env.step(action)
     return {
-        "observation": obs.dict(),
+        "observation": obs,   # ✅ no .dict()
         "reward": reward,
         "done": done,
         "info": info
@@ -26,6 +25,7 @@ def step(action: Action):
 @app.get("/state")
 def state():
     return env.state()
+
 
 @app.get("/")
 def home():
