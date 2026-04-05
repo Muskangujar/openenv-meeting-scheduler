@@ -1,0 +1,19 @@
+spec_version: 1
+
+name: meeting-scheduler-env
+version: 1.0.0
+description: Real-world meeting scheduling environment with constraints and preferences
+
+type: environment
+
+entrypoint: server:app
+port: 7860
+
+observation_space: Observation
+action_space: Action
+reward: float
+
+tasks:
+  - easy_single_slot
+  - medium_conflicts
+  - hard_preferences
