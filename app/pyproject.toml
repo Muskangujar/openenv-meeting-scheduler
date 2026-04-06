@@ -1,14 +1,20 @@
+# Create a minimal pyproject.toml without build-system
+$minimal = @'
 [project]
 name = "meeting-scheduler-env"
 version = "1.0.0"
-description = "Meeting scheduling OpenEnv environment"
+description = "OpenEnv meeting scheduler environment"
+requires-python = ">=3.10"
 dependencies = [
     "fastapi",
     "uvicorn",
     "pydantic",
-    "openai"
+    "openai",
+    "openenv-core>=0.2.0"
 ]
 
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+[project.scripts]
+server = "server.app:app"
+'@
+
+[System.IO.File]::WriteAllText("pyproject.toml", $minimal, [System.Text.UTF8Encoding]::new($false))

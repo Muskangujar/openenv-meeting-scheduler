@@ -1,0 +1,14 @@
+[project]
+name = "meeting-scheduler-env"
+version = "1.0.0"
+description = "Meeting scheduling OpenEnv environment"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "openai"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
