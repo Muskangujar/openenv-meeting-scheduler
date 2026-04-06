@@ -1,4 +1,4 @@
-# server/app.py
+# server/__init__.py
 from fastapi import FastAPI
 from app.env import MeetingSchedulerEnv
 from app.models import Action
@@ -29,10 +29,8 @@ def state():
 def home():
     return {"message": "Meeting Scheduler API is running"}
 
-def main():
-    """Required by OpenEnv validation"""
-    return app
+# For OpenEnv validation
+main = app
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# For ASGI - make the module act as the app
+__all__ = ['app', 'main']
