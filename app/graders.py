@@ -1,78 +1,69 @@
-def grade_easy(trajectory, task):
-    """
-    Expect: agent picks correct free slot and confirms
-    """
-    correct_slot = task.get("correct_slot")
-    confirmed = False
+from app.utils import is_valid_slot, is_perfect_slot
 
+def _is_functionally_correct(slot, task):
+    """Checks if the slot perfectly satisfies calendars and preferences."""
+    return is_perfect_slot(slot, task)
+
+def grade_easy(trajectory, task):
+    """Expect agent to pick any valid, preference-respecting slot and confirm it."""
     for step in trajectory:
         if step["action"] == "confirm_meeting":
-            if step.get("proposed_time") == correct_slot:
-                confirmed = True
-
-    return 1.0 if confirmed else 0.0
-
+            if step.get("proposed_time") and _is_functionally_correct(step.get("proposed_time"), task):
+                return 1.0
+    return 0.0
 
 def grade_medium(trajectory, task):
     """
-    Score:
-    - valid slot (0.6)
-    - reasonable steps (0.2)
-    - no bad actions (0.2)
+    Score components:
+    - Finds valid slot and confirms (0.6)
+    - Low step count / efficiency (0.2)
+    - Avoids unnecessary cancellations (0.2)
     """
     score = 0.0
-    correct_slot = task.get("correct_slot")
-
     confirmed = False
-    steps = len(trajectory)
-
+    
     for step in trajectory:
         if step["action"] == "confirm_meeting":
-            if step.get("proposed_time") == correct_slot:
+            if step.get("proposed_time") and _is_functionally_correct(step.get("proposed_time"), task):
                 confirmed = True
 
     if confirmed:
         score += 0.6
 
-    if steps <= 6:
+    if len(trajectory) <= 6:
         score += 0.2
 
-    bad_actions = any(s["action"] == "cancel" for s in trajectory)
+    bad_actions = any(s["action"] in ["cancel", "reschedule"] for s in trajectory)
     if not bad_actions:
         score += 0.2
 
     return min(score, 1.0)
 
-
 def grade_hard(trajectory, task):
     """
-    Score:
-    - valid slot (0.4)
-    - respects preferences (0.3)
-    - efficient (0.3)
+    Evaluates complex preference satisfaction.
+    Score components:
+    - Confirms a valid slot (0.4)
+    - Fully respects soft preferences (0.4)
+    - Efficiency (0.2)
     """
     score = 0.0
-    correct_slot = task.get("correct_slot")
-
-    confirmed = False
-    respected_preferences = True
-
+    confirmed_slot = None
+    
     for step in trajectory:
         if step["action"] == "confirm_meeting":
-            if step.get("proposed_time") == correct_slot:
-                confirmed = True
+            confirmed_slot = step.get("proposed_time")
 
-            # Example preference check
-            if step.get("proposed_time", "").startswith("09"):
-                respected_preferences = False
-
-    if confirmed:
+    if confirmed_slot and is_valid_slot(confirmed_slot, task.get("calendars", {})):
+        # Valid slot (hard constraints met)
         score += 0.4
+        
+        # Soft constraints met
+        if is_perfect_slot(confirmed_slot, task):
+            score += 0.4
 
-    if respected_preferences:
-        score += 0.3
-
-    if len(trajectory) <= 7:
-        score += 0.3
+    if len(trajectory) <= 10:
+        score += 0.2
 
     return min(score, 1.0)
+

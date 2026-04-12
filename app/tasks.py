@@ -1,5 +1,4 @@
 def load_task(task_name: str):
-
     if task_name == "easy_single_slot":
         return {
             "participants": ["alice", "bob"],
@@ -15,25 +14,27 @@ def load_task(task_name: str):
         return {
             "participants": ["alice", "bob", "charlie"],
             "calendars": {
-                "alice": ["10:00-11:00"],
-                "bob": ["10:30-11:30"],
-                "charlie": ["11:00-12:00"]
+                "alice": ["10:00-11:00", "14:00-15:00"],
+                "bob": ["10:30-11:30", "13:00-14:00"],
+                "charlie": ["11:00-12:00", "13:30-15:00"]
             },
             "duration": 60,
-            "correct_slot": "12:00-13:00"
+            "correct_slots": ["12:00-13:00", "15:00-16:00"]
         }
 
     elif task_name == "hard_preferences":
         return {
             "participants": ["alice", "bob", "charlie"],
             "calendars": {
-                "alice": ["9:00-10:00"],
-                "bob": ["10:00-11:00"],
+                "alice": ["09:00-10:00", "12:00-14:30"],
+                "bob": ["10:00-11:00", "15:00-16:00"],
                 "charlie": ["11:00-12:00"]
             },
             "preferences": {
-                "alice": "no_morning"
+                "alice": "no_morning",
+                "bob": "afternoon_only",
+                "charlie": "no_late_meetings"
             },
             "duration": 60,
-            "correct_slot": "13:00-14:00"
-        }
+            "correct_slots": ["16:00-17:00"]
+        }
