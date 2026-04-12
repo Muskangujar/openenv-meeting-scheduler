@@ -9,8 +9,8 @@ def grade_easy(trajectory, task):
     for step in trajectory:
         if step["action"] == "confirm_meeting":
             if step.get("proposed_time") and _is_functionally_correct(step.get("proposed_time"), task):
-                return 1.0
-    return 0.0
+                return 0.99
+    return 0.01
 
 def grade_medium(trajectory, task):
     """
@@ -37,7 +37,7 @@ def grade_medium(trajectory, task):
     if not bad_actions:
         score += 0.2
 
-    return min(score, 1.0)
+    return max(0.01, min(score, 0.99))
 
 def grade_hard(trajectory, task):
     """
@@ -65,5 +65,6 @@ def grade_hard(trajectory, task):
     if len(trajectory) <= 10:
         score += 0.2
 
-    return min(score, 1.0)
+    return max(0.01, min(score, 0.99))
+
 
