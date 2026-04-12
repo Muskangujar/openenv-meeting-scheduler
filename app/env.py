@@ -31,7 +31,7 @@ class MeetingSchedulerEnv:
         done = False
         info = {"msg": ""}
 
-        # Action history logging for interpretability
+        # Action history logging
         action_desc = f"{action.action_type}"
         if action.proposed_time:
             action_desc += f" time={action.proposed_time}"
@@ -54,7 +54,7 @@ class MeetingSchedulerEnv:
                 reward -= 0.5
                 info["msg"] = "Missing proposed_time to confirm."
             elif is_perfect_slot(action.proposed_time, self.current_task):
-                reward += 1.0  # Boosted reward for perfect completion
+                reward += 1.0
                 done = True
                 info["msg"] = "Meeting scheduled successfully!"
             else:
